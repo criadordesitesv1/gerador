@@ -169,15 +169,12 @@ input::placeholder{color:#2a2a44}
 const GITHUB_USER = 'criadordesitesv1';
 const REPO_GERADOR = 'gerador';
 
-// Checar se já está hospedado (rodando no github.io)
+// Mostrar tela do gerador diretamente
 window.addEventListener(‘DOMContentLoaded’, () => {
-if (location.hostname.includes(‘github.io’) || location.hostname.includes(‘criadordesitesv1’) || location.protocol === ‘https:’) {
-// Já está instalado, mostrar tela do gerador
 document.getElementById(‘pg-instalar’).classList.remove(‘active’);
 document.getElementById(‘pg-gerador’).classList.add(‘active’);
 document.getElementById(‘main-title’).innerHTML = ‘Crie sites<br><em>instantaneamente</em>’;
 document.getElementById(‘main-sub’).textContent = ‘Preencha os dados e o site vai ao ar automaticamente.’;
-}
 
 document.getElementById(‘cnpj’).addEventListener(‘input’, function () {
 let v = this.value.replace(/\D/g, ‘’);
