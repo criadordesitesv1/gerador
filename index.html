@@ -171,7 +171,7 @@ const REPO_GERADOR = 'gerador';
 
 // Checar se já está hospedado (rodando no github.io)
 window.addEventListener(‘DOMContentLoaded’, () => {
-if (location.hostname.includes(‘github.io’)) {
+if (location.hostname.includes(‘github.io’) || location.hostname.includes(‘criadordesitesv1’) || location.protocol === ‘https:’) {
 // Já está instalado, mostrar tela do gerador
 document.getElementById(‘pg-instalar’).classList.remove(‘active’);
 document.getElementById(‘pg-gerador’).classList.add(‘active’);
