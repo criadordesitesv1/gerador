@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Sites</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07080f;--card:#12131f;--border:#1c1d30;--accent:#4f8ef7;--green:#22c55e;--red:#ef4444;--text:#eeeef5;--muted:#6b6b8a}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;align-items:flex-start;justify-content:center;padding:40px 20px 80px;
+  background-image:radial-gradient(ellipse 60% 40% at 10% 10%,rgba(79,142,247,.08) 0%,transparent 60%),
+  radial-gradient(ellipse 40% 30% at 90% 90%,rgba(34,197,94,.05) 0%,transparent 60%)}
+.wrap{width:100%;max-width:500px}
+.header{text-align:center;margin-bottom:36px}
+.badge{display:inline-flex;align-items:center;gap:8px;font-family:'Syne',sans-serif;font-size:11px;
+  font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 10px var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+h1{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;line-height:1.15;margin-bottom:10px}
+h1 em{font-style:normal;color:var(--accent)}
+.sub{color:var(--muted);font-size:13px;line-height:1.6}
+.inst{background:rgba(79,142,247,.06);border:1px solid rgba(79,142,247,.18);border-radius:14px;padding:18px;margin-bottom:14px}
+.inst h3{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.is{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.in{min-width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;margin-top:1px}
+.it{font-size:13px;color:#bbbbd4;line-height:1.5}
+.it strong{color:var(--text)}.it a{color:var(--accent);text-decoration:none}
+.it code{background:rgba(255,255,255,.07);border-radius:4px;padding:1px 5px;font-size:11px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:26px;margin-bottom:14px;animation:up .4s ease}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.ct{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px}
+.cd{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.field{margin-bottom:15px}
+label{display:block;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;
+  padding:12px 15px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;
+  transition:border-color .2s,box-shadow .2s}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,142,247,.12)}
+input::placeholder{color:#2a2a44}
+.hint{font-size:11px;color:var(--muted);margin-top:5px}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:opacity .2s,transform .1s}
+.btn:active{transform:scale(.99)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-blue{background:var(--accent);color:#fff}.btn-blue:hover:not(:disabled){opacity:.88}
+.btn-green{background:var(--green);color:#fff;margin-top:10px}.btn-green:hover:not(:disabled){opacity:.88}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);margin-top:10px}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.tok-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:14px}
+.tok-row input{margin-bottom:0}
+.tok-btn{white-space:nowrap;padding:12px 16px;width:auto;font-size:13px}
+.page{display:none}.page.active{display:block}
+.status{display:none;border-radius:14px;padding:22px;margin-top:14px;text-align:center;animation:up .3s ease}
+.status.load{display:block;background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.2)}
+.status.ok{display:block;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.25)}
+.status.err{display:block;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25)}
+.spin{width:26px;height:26px;border:3px solid rgba(79,142,247,.2);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.si{font-size:28px;margin-bottom:8px}
+.stitle{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:5px}
+.smsg{font-size:13px;color:var(--muted);line-height:1.5}
+.slink{display:inline-block;margin-top:14px;padding:11px 24px;background:var(--green);
+  color:#fff;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-decoration:none}
+.installed-box{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.25);
+  border-radius:14px;padding:16px;margin-bottom:14px;font-size:13px;color:var(--muted);text-align:center}
+.installed-box strong{color:var(--green);display:block;font-family:'Syne',sans-serif;font-size:14px;margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="badge"><span class="dot"></span>Gerador de Sites</div>
+    <h1 id="main-title">Configure uma vez,<br>use <em>sempre</em></h1>
+    <p class="sub" id="main-sub">Na primeira vez, instale o gerador. Depois use normalmente.</p>
+  </div>
+
+  <!-- TELA 1: Instalar -->
+
+  <div class="page active" id="pg-instalar">
+    <div class="inst">
+      <h3>📋 Como gerar seu Token do GitHub</h3>
+      <div class="is"><div class="in">1</div><div class="it">Acesse <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></div></div>
+      <div class="is"><div class="in">2</div><div class="it">Em <strong>Note</strong>, escreva: <code>gerador-sites</code></div></div>
+      <div class="is"><div class="in">3</div><div class="it">Em <strong>Expiration</strong>, escolha <strong>No expiration</strong></div></div>
+      <div class="is"><div class="in">4</div><div class="it">Marque a caixa <strong>repo</strong> (primeira da lista)</div></div>
+      <div class="is"><div class="in">5</div><div class="it">Clique em <strong>Generate token</strong> e copie o código</div></div>
+    </div>
+
+```
+<div class="card">
+  <div class="ct">⚡ Instalar Gerador</div>
+  <div class="cd">Cole seu token para publicar o gerador em <strong>criadordesitesv1.github.io/gerador</strong></div>
+  <div class="field">
+    <label>Token do GitHub</label>
+    <input type="password" id="install-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+  </div>
+  <button class="btn btn-blue" onclick="instalar()">Instalar agora</button>
+</div>
+
+<div class="status" id="st-install">
+  <div class="spin" id="sp-install"></div>
+  <div class="si" id="si-install" style="display:none"></div>
+  <div class="stitle" id="stit-install">Instalando...</div>
+  <div class="smsg" id="smg-install">Publicando o gerador no GitHub Pages...</div>
+  <a href="#" id="slk-install" class="slink" target="_blank" style="display:none">🌐 Abrir meu Gerador</a>
+</div>
+```
+
+  </div>
+
+  <!-- TELA 2: Usar o gerador -->
+
+  <div class="page" id="pg-gerador">
+    <div class="installed-box">
+      <strong>✓ Gerador instalado</strong>
+      Acesse sempre em: <a href="https://criadordesitesv1.github.io/gerador" target="_blank" style="color:var(--accent)">criadordesitesv1.github.io/gerador</a>
+    </div>
+
+```
+<div class="card">
+  <div class="ct">🔑 Token do GitHub</div>
+  <div class="cd">Necessário para publicar os sites.</div>
+  <div class="field">
+    <input type="password" id="use-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">🏢 Dados da Empresa</div>
+  <div class="cd">Preencha as informações e o site vai ao ar automaticamente.</div>
+  <div class="field">
+    <label>Nome da Empresa</label>
+    <input type="text" id="nome" placeholder="Ex: 1233 Maria Sousa" />
+    <div class="hint">MEI com número? Os números saem do domínio automaticamente.</div>
+  </div>
+  <div class="field">
+    <label>CNPJ</label>
+    <input type="text" id="cnpj" placeholder="Ex: 65.389.741/0001-51" maxlength="18" />
+  </div>
+  <div class="field">
+    <label>WhatsApp (só números com DDD)</label>
+    <input type="text" id="numero" placeholder="Ex: 15953747504" maxlength="11" />
+  </div>
+  <button class="btn btn-green" onclick="publicarSite()">✦ Publicar Site</button>
+</div>
+
+<div class="status" id="st-site">
+  <div class="spin" id="sp-site"></div>
+  <div class="si" id="si-site" style="display:none"></div>
+  <div class="stitle" id="stit-site">Publicando...</div>
+  <div class="smsg" id="smg-site">Criando repositório e configurando o site...</div>
+  <a href="#" id="slk-site" class="slink" target="_blank" style="display:none">🌐 Acessar site</a>
+</div>
+```
+
+  </div>
+
+</div>
+<script>
+const GITHUB_USER = 'criadordesitesv1';
+const REPO_GERADOR = 'gerador';
+
+// Mostrar tela do gerador diretamente
+window.addEventListener(‘DOMContentLoaded’, () => {
+document.getElementById(‘pg-instalar’).classList.remove(‘active’);
+document.getElementById(‘pg-gerador’).classList.add(‘active’);
+document.getElementById(‘main-title’).innerHTML = ‘Crie sites<br><em>instantaneamente</em>’;
+document.getElementById(‘main-sub’).textContent = ‘Preencha os dados e o site vai ao ar automaticamente.’;
+
+document.getElementById(‘cnpj’).addEventListener(‘input’, function () {
+let v = this.value.replace(/\D/g, ‘’);
+v = v.replace(/(\d{2})(\d)/, ‘$1.$2’);
+v = v.replace(/(\d{3})(\d)/, ‘$1.$2’);
+v = v.replace(/(\d{3})(\d)/, ‘$1/$2’);
+v = v.replace(/(\d{4})(\d)/, ‘$1-$2’);
+this.value = v.substring(0, 18);
+});
+
+document.getElementById(‘numero’).addEventListener(‘input’, function () {
+this.value = this.value.replace(/\D/g, ‘’);
+});
+});
+
+async function apiCall(tok, path, method, body) {
+const r = await fetch(‘https://api.github.com’ + path, {
+method,
+headers: {
+Authorization: ’token ’ + tok,
+‘Content-Type’: ‘application/json’,
+Accept: ‘application/vnd.github.v3+json’
+},
+body: body ? JSON.stringify(body) : undefined
+});
+return { ok: r.ok, status: r.status, data: await r.json().catch(() => ({})) };
+}
+
+function setStatus(prefix, type, icon, title, msg, link) {
+const b = document.getElementById(‘st-’ + prefix);
+b.className = ’status ’ + type;
+document.getElementById(‘sp-’ + prefix).style.display = type === ‘load’ ? ‘block’ : ‘none’;
+const ic = document.getElementById(‘si-’ + prefix);
+ic.style.display = type !== ‘load’ ? ‘block’ : ‘none’;
+ic.textContent = icon || ‘’;
+document.getElementById(‘stit-’ + prefix).textContent = title;
+document.getElementById(‘smg-’ + prefix).textContent = msg;
+const lk = document.getElementById(‘slk-’ + prefix);
+if (link) { lk.href = link; lk.style.display = ‘inline-block’; }
+else lk.style.display = ‘none’;
+}
+
+function toB64(str) {
+return btoa(unescape(encodeURIComponent(str)));
+}
+
+async function uploadFile(tok, user, repo, filename, content, commitMsg) {
+const get = await apiCall(tok, `/repos/${user}/${repo}/contents/${filename}`, ‘GET’);
+const sha = get.ok ? get.data.sha : undefined;
+return await apiCall(tok, `/repos/${user}/${repo}/contents/${filename}`, ‘PUT’, {
+message: commitMsg,
+content: toB64(content),
+…(sha ? { sha } : {})
+});
+}
+
+async function instalar() {
+const tok = document.getElementById(‘install-token’).value.trim();
+if (!tok) { alert(‘Cole o token!’); return; }
+
+document.querySelector(’#pg-instalar .btn’).disabled = true;
+setStatus(‘install’, ‘load’, ‘’, ‘Verificando token…’, ‘’);
+
+try {
+const me = await fetch(‘https://api.github.com/user’, {
+headers: { Authorization: ‘token ’ + tok }
+});
+if (!me.ok) {
+setStatus(‘install’, ‘err’, ‘❌’, ‘Token inválido’, ‘Verifique o token e tente novamente.’);
+document.querySelector(’#pg-instalar .btn’).disabled = false;
+return;
+}
+} catch(e) {
+setStatus(‘install’, ‘err’, ‘❌’, ‘Erro de conexão’, ‘Verifique sua internet. Detalhe: ’ + e.message);
+document.querySelector(’#pg-instalar .btn’).disabled = false;
+return;
+}
+
+setStatus(‘install’, ‘load’, ‘’, ‘Criando repositório…’, ‘Publicando em criadordesitesv1.github.io/gerador’);
+
+// Criar repositório
+const create = await apiCall(tok, ‘/user/repos’, ‘POST’, {
+name: REPO_GERADOR,
+description: ‘Gerador de Sites’,
+private: false,
+auto_init: false
+});
+
+if (!create.ok && create.status !== 422) {
+setStatus(‘install’, ‘err’, ‘❌’, ‘Erro ao criar repositório’, create.data.message || ‘Tente novamente.’);
+document.querySelector(’#pg-instalar .btn’).disabled = false;
+return;
+}
+
+await new Promise(r => setTimeout(r, 1500));
+
+setStatus(‘install’, ‘load’, ‘’, ‘Publicando o gerador…’, ‘Fazendo upload do arquivo…’);
+
+// Pegar o HTML desta própria página e publicar
+const selfHTML = document.documentElement.outerHTML;
+const upload = await uploadFile(tok, GITHUB_USER, REPO_GERADOR, ‘index.html’, selfHTML, ‘Instalar gerador’);
+
+if (!upload.ok) {
+setStatus(‘install’, ‘err’, ‘❌’, ‘Erro no upload’, upload.data.message || ‘Tente novamente.’);
+document.querySelector(’#pg-instalar .btn’).disabled = false;
+return;
+}
+
+await new Promise(r => setTimeout(r, 1000));
+
+setStatus(‘install’, ‘load’, ‘’, ‘Ativando GitHub Pages…’, ‘Aguarde alguns segundos…’);
+
+await apiCall(tok, `/repos/${GITHUB_USER}/${REPO_GERADOR}/pages`, ‘POST’, {
+source: { branch: ‘main’, path: ‘/’ }
+});
+
+await new Promise(r => setTimeout(r, 2000));
+
+const url = `https://${GITHUB_USER}.github.io/${REPO_GERADOR}`;
+setStatus(‘install’, ‘ok’, ‘🎉’, ‘Gerador instalado!’,
+‘Acesse o link abaixo. Pode levar 1-2 minutos para aparecer pela primeira vez.’,
+url
+);
+}
+
+// –– GERADOR DE SITES ––
+
+function gerarDominio(nome) {
+let d = nome.trim().replace(/^\d+\s+/, ‘’);
+return d.toLowerCase().normalize(‘NFD’).replace(/[\u0300-\u036f]/g, ‘’)
+.replace(/[^a-z0-9\s]/g, ‘’).trim().replace(/\s+/g, ‘-’);
+}
+
+function gerarEmail(nome) {
+const s = nome.trim().toLowerCase().normalize(‘NFD’)
+.replace(/[\u0300-\u036f]/g, ‘’).replace(/[^a-z0-9]/g, ‘’);
+return ‘contato@’ + s + ‘.com’;
+}
+
+function fmtNum(num) {
+num = num.replace(/\D/g, ‘’);
+if (num.length === 11) return ‘(’ + num.slice(0, 2) + ’) ’ + num.slice(2, 7) + ‘-’ + num.slice(7);
+if (num.length === 10) return ‘(’ + num.slice(0, 2) + ’) ’ + num.slice(2, 6) + ‘-’ + num.slice(6);
+return num;
+}
+
+function gerarSiteHTML(nome, cnpj, numero) {
+const email = gerarEmail(nome);
+const numFmt = fmtNum(numero);
+const hoje = new Date();
+const dataAb = String(hoje.getDate()).padStart(2, ‘0’) + ‘/’ + String(hoje.getMonth() + 1).padStart(2, ‘0’) + ‘/’ + hoje.getFullYear();
+const ano = hoje.getFullYear();
+
+return `<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${nome}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;color:#222;background:#fff}
+header{background:#1a1a2e;color:#fff;text-align:center;padding:40px 20px}
+header h1{font-size:26px;margin-bottom:8px}header p{font-size:14px;color:#aaa}
+nav{background:#16213e;text-align:right;padding:10px 20px}
+nav a{color:#aaa;font-size:13px;text-decoration:none}
+section{max-width:800px;margin:0 auto;padding:40px 20px}
+section h2{font-size:22px;color:#1a1a2e;margin-bottom:16px;border-bottom:2px solid #eee;padding-bottom:8px}
+section p{font-size:15px;line-height:1.7;color:#444;margin-bottom:12px}
+.grid{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px}
+.item{background:#f5f5f5;border-radius:10px;padding:16px 24px;flex:1;min-width:200px}
+.item strong{display:block;font-size:11px;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.item span{font-size:15px;color:#1a1a2e;font-weight:600}
+.btns{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+.btn{display:inline-block;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;text-align:center}
+.bg{background:#25d366;color:#fff}.gb{background:#eee;color:#333}
+footer{background:#1a1a2e;color:#888;text-align:center;padding:24px 20px;font-size:12px;line-height:1.8}
+details{margin-top:40px;border:1px solid #eee;border-radius:10px;overflow:hidden}
+details summary{padding:16px 20px;cursor:pointer;font-weight:700;background:#f9f9f9;color:#1a1a2e}
+.priv{padding:20px;font-size:13px;line-height:1.8;color:#555}
+</style>
+</head>
+<body>
+<nav><a href="#">LOGIN</a></nav>
+<header>
+  <p>${nome.toUpperCase()}</p>
+  <h1>${nome.toUpperCase()}</h1>
+  <p>CNPJ: ${cnpj}</p>
+</header>
+<section>
+  <h2>NOSSA MISSÃO</h2>
+  <p>A missão da ${nome} é desenvolver e executar estratégias eficientes, orientadas a resultados, que fortaleçam a presença de marcas, ampliem oportunidades de negócio e impulsionem o crescimento sustentável de nossos clientes.</p>
+  <p>Atuamos com foco em marketing direto, publicidade e consultoria estratégica, oferecendo soluções personalizadas, baseadas em análise, criatividade, ética e comprometimento. Nosso propósito é gerar valor real por meio de campanhas bem estruturadas, comunicação assertiva e gestão responsável, sempre alinhados às necessidades e objetivos de cada cliente.</p>
+  <div class="btns">
+    <a href="https://wa.me/${numero}?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es." class="btn bg">CONVERSAR AGORA</a>
+    <a href="https://instagram.com" class="btn gb">INSTAGRAM</a>
+  </div>
+</section>
+<section>
+  <h2>QUEM SOMOS?</h2>
+  <p>A ${nome}, registrada sob o CNPJ ${cnpj}, foi fundada em ${dataAb}. Somos uma micro empresa, com natureza jurídica Empresário (Individual), atuando com foco em eficiência, organização e suporte empresarial.</p>
+  <p>Nossa atividade principal inclui serviços que representam a base operacional de nossas atividades. Atuamos com atendimento próximo, responsável e alinhado às necessidades de cada cliente.</p>
+  <p>Na ${nome}, acreditamos que resultados consistentes são alcançados por meio de organização, eficiência e relações transparentes. Nosso compromisso é atuar como uma extensão confiável da estrutura de nossos clientes.</p>
+</section>
+<section>
+  <h2>CONTATO</h2>
+  <div class="grid">
+    <div class="item"><strong>Telefone</strong><span>${numFmt}</span></div>
+    <div class="item"><strong>E-mail</strong><span>${email}</span></div>
+    <div class="item"><strong>WhatsApp</strong><span>${numFmt}</span></div>
+  </div>
+  <div class="btns">
+    <a href="https://wa.me/${numero}?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es." class="btn bg">FALAR NO WHATSAPP</a>
+    <a href="https://instagram.com" class="btn gb">INSTAGRAM → ACESSAR</a>
+  </div>
+</section>
+<section>
+  <details>
+    <summary>POLÍTICA DE PRIVACIDADE</summary>
+    <div class="priv">
+      <p><strong>${nome}</strong><br>CNPJ: ${cnpj}</p><br>
+      <p><strong>1. Finalidade</strong><br>Esta Política descreve como a ${nome} coleta, utiliza, armazena e protege dados pessoais.</p><br>
+      <p><strong>2. Dados Coletados</strong><br>Nome, e-mail, telefone, dados profissionais; Registros de comunicação e histórico de atendimento.</p><br>
+      <p><strong>3. Uso dos Dados</strong><br>Prestação dos serviços contratados; Comunicação operacional e contratual; Cumprimento de obrigações legais.</p><br>
+      <p><strong>4. Compartilhamento</strong><br>Não comercializamos dados. Compartilhamento apenas com parceiros essenciais ou por exigência legal.</p><br>
+      <p><strong>5. Direitos do Titular (LGPD)</strong><br>Confirmação, acesso, correção, anonimização, bloqueio ou eliminação de dados.</p><br>
+      <p><strong>6. Contato</strong><br>📧 ${email}<br>📞 ${numero}</p>
+    </div>
+  </details>
+</section>
+<footer>
+  ${nome} | CNPJ: ${cnpj} | Data de Abertura: ${dataAb} | Porte: MICRO EMPRESA | Natureza Jurídica: Empresário (Individual) | Situação Cadastral: ATIVA<br>
+  Contato: 📧 ${email} 📞 ${numFmt}<br>
+  ©️ ${ano} ${nome}. Todos os direitos reservados.
+</footer>
+</body></html>`;
+}
+
+async function publicarSite() {
+const tok = document.getElementById(‘use-token’).value.trim();
+const nome = document.getElementById(‘nome’).value.trim();
+const cnpj = document.getElementById(‘cnpj’).value.trim();
+const numero = document.getElementById(‘numero’).value.trim();
+
+if (!tok || !nome || !cnpj || !numero) { alert(‘Preencha todos os campos!’); return; }
+
+const repoName = gerarDominio(nome);
+const btn = document.querySelector(’#pg-gerador .btn-green’);
+btn.disabled = true;
+
+setStatus(‘site’, ‘load’, ‘’, ‘Criando repositório…’, repoName);
+
+const create = await apiCall(tok, ‘/user/repos’, ‘POST’, {
+name: repoName,
+description: ’Site de ’ + nome,
+private: false,
+auto_init: false
+});
+
+if (!create.ok && create.status !== 422) {
+setStatus(‘site’, ‘err’, ‘❌’, ‘Erro ao criar repositório’, create.data.message || ‘’);
+btn.disabled = false;
+return;
+}
+
+await new Promise(r => setTimeout(r, 1500));
+setStatus(‘site’, ‘load’, ‘’, ‘Enviando arquivos…’, ‘Fazendo upload do site…’);
+
+const html = gerarSiteHTML(nome, cnpj, numero);
+const upload = await uploadFile(tok, GITHUB_USER, repoName, ‘index.html’, html, ‘Publicar site’);
+
+if (!upload.ok) {
+setStatus(‘site’, ‘err’, ‘❌’, ‘Erro no upload’, upload.data.message || ‘’);
+btn.disabled = false;
+return;
+}
+
+await new Promise(r => setTimeout(r, 1000));
+setStatus(‘site’, ‘load’, ‘’, ‘Ativando GitHub Pages…’, ‘Aguarde…’);
+
+await apiCall(tok, `/repos/${GITHUB_USER}/${repoName}/pages`, ‘POST’, {
+source: { branch: ‘main’, path: ‘/’ }
+});
+
+await new Promise(r => setTimeout(r, 2000));
+
+const url = `https://${GITHUB_USER}.github.io/${repoName}`;
+setStatus(‘site’, ‘ok’, ‘🎉’, ‘Site publicado!’,
+‘Pode levar 1-2 minutos para aparecer pela primeira vez.’, url);
+
+btn.disabled = false;
+}
+</script>
+
+</body>
+</html>
